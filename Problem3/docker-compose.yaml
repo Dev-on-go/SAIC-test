@@ -1,0 +1,25 @@
+version: '3'
+services:
+  saic:
+    build:
+      context: ./SAIC-Website-main
+      dockerfile: Dockerfile
+    volumes:
+      - ./SAIC-Website-main:/usr/share/nginx/html
+    ports:
+      - 8080:80
+
+  ruby:
+    image: ruby:latest
+    volumes:
+      - ./github-languages-master:/app
+    ports:
+      - 3000:3000
+
+  backup:
+    image: alpine:latest
+    volumes:
+      - /Documents/SAIC/Problem3/backup:/backup
+      - ./SAIC-Website-main:/saic
+      - ./github-languages-master:/ruby
+    command: sh -c "sleep 86340 && zip -r /backup/website_backup_$(date +'%Y%m%d%H%M').zip /saic /ruby"
